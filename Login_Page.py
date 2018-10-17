@@ -1,55 +1,55 @@
-
+import mysql.connector as mc
 import tkinter
 from tkinter import *
 import Register
-import Control_dynamic_auto_update
+import Control
 import forget
 from tkinter import messagebox
-import urllib3
-import json
+
+
+
+
 
 def log():
-    http = urllib3.PoolManager()
+
+
     def login():
-        r=http.request('GET',"https://deepakkumarpandeychs.000webhostapp.com/getstatus2.php")
-        data = r.data.decode('utf-8')
-        data=data[2:-2].split("},{")
-        l=list()
-        for i in data:
-            l.append(i.split(","))
-        data=[]
-        for i in l:
-            p=[i[0][8:-1],i[1][12:-1]]
-            data.append(p)
-            p=[]
+
         x=e1.get()
         y=e2.get()
+        db=mc.connect(host="localhost",user="deepak",database="deepak_home",password="deepak!@#")
+        cur=db.cursor()
+        cmd="select * from users;"
+        cur.execute(cmd)
+        z=cur.fetchall()
         l=0
 
-        for i in data:
+        for i in z:
 
             l+=1
-            if x==i[0] and y==i[1]:
+            if x==i[1] and y==i[2]:
 
                 messagebox.showinfo(title="Welcome", message="Hi! Welcome to Home control")
+                Control.control()
                 log.destroy()
-                Control_dynamic_auto_update.control()
-                
                 break
 
-            if l==len(data):
+            if l==len(x):
 
                 messagebox.showinfo(title="ERROR", message="User name or Password incorrect")
 
+        db.commit()
+        cur.close()
+        db.close()
+
     def reg():
-        log.destroy()
+
         Register.page()
-        
+        log.destroy()
 
     def forg():
-            log.destroy()
-            forget.forget()
-        
+        forget.forget()
+        log.destroy()
     log=tkinter.Tk()
     log.title("Home Login")
     log.geometry("1366x768")
